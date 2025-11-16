@@ -13,12 +13,21 @@ export type Evento = {
 
 export async function listarEventos(): Promise<Evento[]> {
   return await query<Evento>(`
-    SELECT 
+    SELECT
       e.id, e.titulo, e.descricao, e.data, e.local, e.imagem_url,
       c.id AS categoria_id
     FROM eventos e
     LEFT JOIN categorias c ON e.categoria_id = c.id
     ORDER BY e.data ASC
+  `)
+}
+
+export async function listarTodosEventos(): Promise<Evento[]> {
+  return await query<Evento>(`
+    SELECT
+      e.id, e.titulo, e.descricao, e.data, e.local, e.imagem_url, e.categoria_id
+    FROM eventos e
+    ORDER BY e.id DESC
   `)
 }
 

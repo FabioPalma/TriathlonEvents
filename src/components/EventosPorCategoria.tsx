@@ -1,5 +1,8 @@
 import { listarEventosPorCategoria } from '@/lib/queries/eventos'
 import Image from 'next/image'
+import Link from 'next/link'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 
 interface EventosPorCategoriaProps {
   titulo: string
@@ -14,35 +17,34 @@ export default async function EventosPorCategoria({ titulo, categoriaId }: Event
       <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">{titulo}</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6">
         {eventos.map((evento) => (
-          <div
-            key={evento.id}
-            className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
-          >
+          <Link key={evento.id} href={`/evento/${evento.titulo.toLowerCase().replace(/\s+/g, '-')}/${evento.id}`}>
+            <Card className="overflow-hidden hover:shadow-xl transition-shadow duration-300 bg-white border-1 border-black cursor-pointer">
             {evento.imagem_url && (
-              <div className="relative h-48 w-full">
+              <div className="relative h-48 w-full" style={{ minHeight: '192px' }}>
                 <Image
                   src={evento.imagem_url}
                   alt={evento.titulo}
-                  height={100}
-                  width={300}
-                  objectFit="cover"
-                  className="absolute inset-0 w-full h-full object-cover"
-                  loading="lazy"
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 16vw"
+                  className="object-cover"
                 />
               </div>
             )}
-            <div className="p-4">
-              <p className="text-xs uppercase text-blue-600 font-medium mt-2">
-                {evento.categoria_id}
-              </p>
-              <h2 className="text-xl font-semibold text-gray-800">{evento.titulo}</h2>
-              <p className="text-gray-600 text-sm mt-1">{evento.descricao}</p>
-              <div className="mt-3 text-sm text-gray-500">
-                📅 {new Date(evento.data).toLocaleString()}<br />
-                📍 {evento.local}
+            <CardHeader className="p-4">
+              <Badge variant="secondary" className="w-fit mb-2">
+                Categoria {evento.categoria_id}
+              </Badge>
+              <CardTitle className="text-xl">{evento.titulo}</CardTitle>
+              <CardDescription className="text-sm">{evento.descricao}</CardDescription>
+            </CardHeader>
+            <CardContent className="p-4 pt-0">
+              <div className="text-sm text-muted-foreground space-y-1">
+                <p>📅 {new Date(evento.data).toLocaleString()}</p>
+                <p>📍 {evento.local}</p>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
+          </Link>
         ))}
       </div>
     </section>
